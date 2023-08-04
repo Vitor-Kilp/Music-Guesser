@@ -10,7 +10,7 @@
 	let modalText = "Copied Link!"
 	let showVideos = false;
 	playlistData.set(data.playlistData.videos);
-
+	console.log(data.playlistData.videos)
 	function handleDelete(index: number) {
 		playlistData.update((data) => {
 			data.splice(index, 1);

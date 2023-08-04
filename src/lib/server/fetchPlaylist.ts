@@ -1,5 +1,6 @@
 import type { Video } from "$lib/types";
 import { API_KEY } from "$env/static/private";
+
 type playlistInfo = {
     items: [
         {
@@ -13,6 +14,40 @@ type playlistInfo = {
     ]
 }
 
+type playlistItems = {
+    kind: "youtube#playlistItem",
+    id: string,
+    snippet: {
+        //publishedAt: datetime,
+        channelId: string,
+        title: string,
+        description: string,
+        thumbnails: {
+            default: {
+                url: string,
+                width: number,
+                height: number
+            } | undefined
+        },
+        channelTitle: string,
+        playlistId: string,
+        position: number,
+        resourceId: {
+            kind: string,
+            videoId: string,
+        }
+    },
+    contentDetails: {
+        videoId: string,
+        startAt: string,
+        endAt: string,
+        note: string
+    },
+    status: {
+        privacyStatus: string
+    }
+
+}
 
 export default async function fetchPlaylist(playlistId: string): Promise<{ videos: Video[]; info: playlistInfo | null; }> {
     const apiKey = API_KEY;
@@ -33,12 +68,17 @@ export default async function fetchPlaylist(playlistId: string): Promise<{ video
 
             const data = await response.json();
 
-            const fetchedVideos: Video[] = data.items.map((item: any) => ({
-                id: item.snippet.resourceId.videoId,
-                title: item.snippet.title,
-                description: item.snippet.description,
-                thumbnail: item.snippet.thumbnails.high.url,
-            }));
+            const fetchedVideos: Video[] = []
+            for (const item of data.item) {
+                if (item.snippet.title != 'Deleted video' && item.snippet.title != 'Private video') {
+                    fetchedVideos.push({
+                        id: item.snippet.resourceId.videoId,
+                        title: item.snippet.title,
+                        description: item.snippet.description,
+                        thumbnail: item.snippet.thumbnails.default?.url && "",
+                    })
+                }
+            };
 
             videos = videos.concat(fetchedVideos);
 
