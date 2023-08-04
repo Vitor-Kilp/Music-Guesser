@@ -10,6 +10,7 @@
 			const url = new URL(playlistLink);
 			const playlistParam = url.searchParams.get('list');
 
+			console.log(playlistParam)
 			if (playlistParam) {
 				status = '';
 				goto(`/load-playlist?list=${playlistParam}`);
