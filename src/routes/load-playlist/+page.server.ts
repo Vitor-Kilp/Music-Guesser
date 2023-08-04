@@ -4,7 +4,6 @@ import type { PageServerLoad } from "./$types";
 
 export const load = (async ({ url }) => {
     const playlistId = url.searchParams.get('list')
-    console.log(playlistId);
 
     if (playlistId) {
         const playlistData = await fetchPlaylist(playlistId);

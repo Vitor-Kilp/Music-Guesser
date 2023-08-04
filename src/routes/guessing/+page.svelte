@@ -30,7 +30,7 @@
 		// Remove current video from playlist data
 		tempArray.pop();
 		playlistData.update((data) => {
-			console.log(data.pop());
+			data.pop();
 			return data;
 		});
 		const shuffledArr = tempArray.sort(() => Math.random() - 0.5);
@@ -75,8 +75,10 @@
 
 	onMount(() => {
 		if (window.YT) {
+			playlistData.update(data => data.sort(() => Math.random() - 0.5))
 			load();
 		} else {
+			playlistData.update(data => data.sort(() => Math.random() - 0.5))
 			window.onYouTubeIframeAPIReady = load;
 		}
 	});
@@ -120,13 +122,11 @@
 				return data;
 			});
 			choiceMade = true;
-			console.log('CORRECT', $guesses.correct);
 		} else {
 			guesses.update((data) => {
 				data.incorrect.push(currentVideo);
 				return data;
 			});
-			console.log('ERROU', $guesses.incorrect);
 			choiceMade = true;
 		}
 	}
