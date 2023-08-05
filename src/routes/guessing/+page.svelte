@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { playlistData } from '$lib/stores/playlistStore';
 	import { guesses } from '$lib/stores/guesses';
+	import {counterVideo} from "$lib/stores/counter"
 	import { onMount, onDestroy } from 'svelte';
 	import type { Video } from '$lib/types';
 	import VolumeSlider from './VolumeSlider.svelte';
@@ -29,10 +30,7 @@
 
 		// Remove current video from playlist data
 		tempArray.pop();
-		playlistData.update((data) => {
-			data.pop();
-			return data;
-		});
+
 		const shuffledArr = tempArray.sort(() => Math.random() - 0.5);
 		const options = shuffledArr.slice(0, 3);
 		options.push(currentVideo);
@@ -74,17 +72,25 @@
 	}
 
 	onMount(() => {
-		if (window.YT) {
-			playlistData.update(data => data.sort(() => Math.random() - 0.5))
+		if (window.YT && window.YT.Player) {
+			playlistData.update((data) => data.sort(() => Math.random() - 0.5));
 			load();
 		} else {
-			playlistData.update(data => data.sort(() => Math.random() - 0.5))
-			window.onYouTubeIframeAPIReady = load;
+			console.log("2")
+			playlistData.update((data) => data.sort(() => Math.random() - 0.5));
+			(window as any).onYouTubeIframeAPIReady = load;
 		}
 	});
 
 	function onPlayerReady() {
 		videoDuration = player.getDuration();
+
+		// If the video was blocked skip it
+		if (videoDuration === 0) {
+			counterVideo.update(data => {data.skipped += 1; return data})
+			handleNext();
+		}
+
 		currentTime = player.getCurrentTime();
 		setInterval(() => {
 			if (playerReady) currentTime = player.getCurrentTime();
@@ -107,6 +113,11 @@
 	});
 
 	function handleNext() {
+		playlistData.update((data) => {
+			data.pop();
+			return data;
+		});
+		counterVideo.update(data => {data.current += 1; return data})
 		videoPaused = true;
 		playerReady = false;
 		currentVideo = $playlistData.at(-1) || { id: '', title: '', description: '', thumbnail: '' };
@@ -137,7 +148,9 @@
 </svelte:head>
 
 <main class="text-gray-300 sm:p-24 p-4 pt-20 h-screen">
-		<div class="flex flex-col items-center justify-center h-full w-full"><div class="max-w-[800px] h-full w-full">
+	<div class="flex flex-col items-center justify-center h-full w-full">
+		<h1 class="text-lg font-semibold p-1">{$counterVideo.current} / {$counterVideo.total}</h1>
+		<div class="max-w-[800px] h-full w-full">
 			<div class="flex pb-[56.25%] w-full h-0 relative">
 				<div
 					class="transition-opacity absolute top-0 left-0 w-full h-full ease-in-out-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] duration-1000 opacity-0 pointer-events-none invisible"

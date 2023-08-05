@@ -6,8 +6,8 @@
 	<title>Song Gueeser</title>
 </svelte:head>
 
-<nav class="flex items-center justify-between text-gray-200 fixed w-full h-16 bg-text-primary px-12">
-	<div class="flex items-center gap-x-3">
+<nav class="flex items-center justify-between text-gray-200 fixed w-full h-16 bg-text-primary px-12 z-30">
+	<a href="/" class="flex items-center gap-x-3">
 		<h1 class="font-bold text-3xl">Song Guesser</h1>
 		<svg
 			class="text-primary"
@@ -23,10 +23,7 @@
 				stroke-width="3"><circle cx="8" cy="18" r="4" /><path d="M12 18V2l7 4" /></g
 			></svg
 		>
-	</div>
-	<div>
-		<a class="text-lg font-semibold" href="/">Home</a>
-	</div>
+	</a>
 </nav>
 <slot />
 

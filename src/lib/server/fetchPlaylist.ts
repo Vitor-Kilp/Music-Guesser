@@ -69,7 +69,7 @@ export default async function fetchPlaylist(playlistId: string): Promise<{ video
             const data = await response.json();
 
             const fetchedVideos: Video[] = []
-            for (const item of data.item) {
+            for (const item of data.items) {
                 if (item.snippet.title != 'Deleted video' && item.snippet.title != 'Private video') {
                     fetchedVideos.push({
                         id: item.snippet.resourceId.videoId,

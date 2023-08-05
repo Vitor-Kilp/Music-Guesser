@@ -7,7 +7,7 @@
 </script>
 
 {#if choiceMade && selectedOption === currentVideo.id}
-<div class="flex items-center justify-center pt-4 gap-2">
+<div class="flex h-12 items-center justify-center pt-4 gap-2">
     <h1 class="text-3xl font-bold">Correct!</h1>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
         ><g
@@ -39,6 +39,6 @@
     >
 </div>
 {:else}
-<div class="h-16">
+<div class="h-[48px]">
 </div>
 {/if}
